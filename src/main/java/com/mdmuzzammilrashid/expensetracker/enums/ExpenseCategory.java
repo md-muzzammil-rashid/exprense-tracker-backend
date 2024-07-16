@@ -1,6 +1,6 @@
 package com.mdmuzzammilrashid.expensetracker.enums;
 
-public enum ExpenseCategory {
+public enum ExpenseCategory implements TransactionCategory {
     HOUSING ,
     UTILITIES,
     FOOD,
@@ -16,5 +16,10 @@ public enum ExpenseCategory {
     FAMILY,
     GIFT_AND_DECORATION,
     PERSONAL_CARE,
-    MISCELLANEOUS
+    MISCELLANEOUS;
+
+    @Override
+    public String getCategoryName() {
+        return name();
+    }
 }

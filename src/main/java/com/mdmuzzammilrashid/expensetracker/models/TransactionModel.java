@@ -1,6 +1,7 @@
 package com.mdmuzzammilrashid.expensetracker.models;
 
 import com.mdmuzzammilrashid.expensetracker.enums.ExpenseCategory;
+import com.mdmuzzammilrashid.expensetracker.enums.TransactionCategory;
 import com.mdmuzzammilrashid.expensetracker.enums.TransactionType;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class TransactionModel {
     private TransactionType type;
     private Double amount;
     private String date;
-    private ExpenseCategory category;
+    private String category;
     private String description;
     private String attachments;
     private String walletId;

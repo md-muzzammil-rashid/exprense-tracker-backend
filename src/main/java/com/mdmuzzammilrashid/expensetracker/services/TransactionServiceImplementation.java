@@ -65,6 +65,7 @@ public class TransactionServiceImplementation implements ITransactionService {
             entity.setWalletId(transaction.getWalletId());
             entity.setDescription(transaction.getDescription());
             entity.setTransactionId(transaction.getTransactionId());
+            entity.setType(transaction.getType());
             savedTransactions.add(entity);
         });
         transactionRepository.saveAll(savedTransactions);
@@ -81,6 +82,7 @@ public class TransactionServiceImplementation implements ITransactionService {
                 oldTransaction.get().setDate(transaction.getDate());
                 oldTransaction.get().setDescription(transaction.getDescription());
                 oldTransaction.get().setWalletId(transaction.getWalletId());
+                oldTransaction.get().setType(transaction.getType());
                 transactionRepository.save(oldTransaction.get());
                 return true;
             }            
