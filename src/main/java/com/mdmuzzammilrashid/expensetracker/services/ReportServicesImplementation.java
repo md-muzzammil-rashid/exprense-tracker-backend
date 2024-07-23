@@ -85,7 +85,7 @@ public class ReportServicesImplementation implements IReportServices {
         Map<ExpenseCategory, List<TransactionEntity>> transactions = new HashMap<>();
 
         for(ExpenseCategory category : ExpenseCategory.values()){
-            List<TransactionEntity> transaction = transactionRepository.findTransactionByCategoryAndWalletId(walletId, category.getCategoryName(), startDate, endDate, transactionType.EXPENSE);
+            List<TransactionEntity> transaction = transactionRepository.findTransactionByCategoryAndWalletId(walletId, category.getCategoryName(), startDate, endDate, TransactionType.EXPENSE);
             transaction.forEach(t->System.out.println(t));
             transactions.computeIfAbsent(category, k -> new ArrayList<>()).addAll(transaction);
         }
@@ -130,7 +130,11 @@ public class ReportServicesImplementation implements IReportServices {
         }
         String startDate = year+"-"+month+"-01";
         String endDate = year+"-"+month+"-31";
-        return transactionRepository.findNetTransactionByType(transactionType.INCOME, startDate, endDate) - transactionRepository.findNetTransactionByType(transactionType.EXPENSE, startDate, endDate);
+        Double totalIncome  = transactionRepository.findNetTransactionByType(transactionType.INCOME, startDate, endDate);
+        Double totalExpense = transactionRepository.findNetTransactionByType(transactionType.EXPENSE, startDate, endDate);
+        if(totalExpense != null && totalExpense != null)return totalIncome - totalExpense;
+        if(totalIncome != null) return totalIncome;
+        return 0.0;
 
     }
 
@@ -139,7 +143,11 @@ public class ReportServicesImplementation implements IReportServices {
         // TODO Auto-generated method stub
         String startDate = year.toString()+"-"+"01-01";
         String endDate = year.toString()+"-"+"12-31";
-        return transactionRepository.findNetTransactionByType(transactionType.INCOME, startDate, endDate) - transactionRepository.findNetTransactionByType(transactionType.EXPENSE, startDate, endDate);
+        Double totalIncome  = transactionRepository.findNetTransactionByType(transactionType.INCOME, startDate, endDate);
+        Double totalExpense = transactionRepository.findNetTransactionByType(transactionType.EXPENSE, startDate, endDate);
+        if(totalExpense != null && totalExpense != null)return totalIncome - totalExpense;
+        if(totalIncome != null) return totalIncome;
+        return 0.0;
 
     }
 

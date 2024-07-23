@@ -2,13 +2,15 @@ package com.mdmuzzammilrashid.expensetracker.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
-import org.apache.el.stream.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer.JwtConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +42,8 @@ public class UserServiceImplementation implements IUserService {
             throw new AuthException("User with same username or email already exists", HttpStatus.CONFLICT);
         }
         user.setDisplayName(userData.getDisplayName());
-        user.setUsername(userData.getUsername());
-        user.setEmail(userData.getEmail());
+        user.setUsername(userData.getUsername().trim().toLowerCase());
+        user.setEmail(userData.getEmail().trim().toLowerCase());
         user.setPassword(passwordEncoder.encode(userData.getPassword()));
         Integer OTP = rand.nextInt(100000, 999999);
         user.setVerificationOTP(OTP);
@@ -71,7 +73,7 @@ public class UserServiceImplementation implements IUserService {
     @Override
     public UserEntity loginUser(String usernameOrEmail, String password) {
         UserEntity user = userRepo.findUserByUsernameOrEmail(usernameOrEmail, usernameOrEmail).get(0);
-        if(!user){
+        if(user==null){
             throw new AuthException("Invalid username or email", HttpStatus.UNAUTHORIZED);
         }
         if(!passwordEncoder.matches(password, user.getPassword())){
@@ -87,5 +89,10 @@ public class UserServiceImplementation implements IUserService {
         //TODO:
         return null;
     }
+    @Override
+    public UserEntity getUserDetails(String username) {
+        return userRepo.findByUsername(username).get();
+    }
+
 
 }
