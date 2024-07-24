@@ -2,18 +2,14 @@ package com.mdmuzzammilrashid.expensetracker.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.mdmuzzammilrashid.expensetracker.DTO.UserDetailsResponse;
 import com.mdmuzzammilrashid.expensetracker.Entity.UserEntity;
 import com.mdmuzzammilrashid.expensetracker.exceptions.AuthException;
 import com.mdmuzzammilrashid.expensetracker.models.UserModel;
@@ -46,7 +42,7 @@ public class UserServiceImplementation implements IUserService {
         user.setEmail(userData.getEmail().trim().toLowerCase());
         user.setPassword(passwordEncoder.encode(userData.getPassword()));
         Integer OTP = rand.nextInt(100000, 999999);
-        user.setVerificationOTP(OTP);
+        user.setVerificationOTP(OTP.toString());
         LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(15);
         user.setVerificationOTPExpiry(expiryTime );
         return userRepo.save(user);
@@ -70,28 +66,30 @@ public class UserServiceImplementation implements IUserService {
         // TODO: Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'verifyOTP'");
     }
-    @Override
-    public UserEntity loginUser(String usernameOrEmail, String password) {
-        UserEntity user = userRepo.findUserByUsernameOrEmail(usernameOrEmail, usernameOrEmail).get(0);
-        if(user==null){
-            throw new AuthException("Invalid username or email", HttpStatus.UNAUTHORIZED);
-        }
-        if(!passwordEncoder.matches(password, user.getPassword())){
-            throw new AuthException("Invalid password", HttpStatus.UNAUTHORIZED);
-        }
 
-        //TODO: generate access and refresh token 
 
-        return user;
-    }
-    @Override
-    public Object generateAccessAndRefreshToken(String username) {
-        //TODO:
-        return null;
-    }
     @Override
     public UserEntity getUserDetails(String username) {
+        // return userRepo.findById(userId).get();
         return userRepo.findByUsername(username).get();
+    }
+
+    @Override
+    public void setRefreshToken(String username, String refreshToken) {
+        UserEntity user = userRepo.findByUsername(username).get();
+        user.setRefreshToken(refreshToken);
+        userRepo.save(user);
+    }
+
+    @Override
+    public UserDetailsResponse getUserDetailsById(String userId) {
+         UserEntity user = userRepo.findByUserId(userId).get();
+         System.out.println(user);
+         UserDetailsResponse userDetail = new UserDetailsResponse(user.getUserId(), user.getUsername(), user.getEmail(), user.getDisplayName(), user.getVerified(), user.getAvatar());
+        // UserDetailsResponse userDetail = new UserDetailsResponse();
+        // userDetail.setUserId(user.getUserId());
+
+        return userDetail;
     }
 
 

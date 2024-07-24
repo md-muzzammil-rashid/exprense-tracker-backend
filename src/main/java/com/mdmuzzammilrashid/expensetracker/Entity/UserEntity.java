@@ -1,9 +1,6 @@
 package com.mdmuzzammilrashid.expensetracker.Entity;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.UUID;
-
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,18 +23,19 @@ import lombok.ToString;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID userId;
+    private String userId;
 
     private String username;
     private String email;
     private String password;
     private String displayName;
+    private String avatar;
 
     private Boolean verified = false;
-    private Number verificationOTP;
+    private String verificationOTP;
     private LocalDateTime verificationOTPExpiry;
     
-    private Number forgetPasswordCode;
+    private String forgetPasswordCode;
     private LocalDateTime forgetPasswordCodeExpiry;
 
     private String accessToken;

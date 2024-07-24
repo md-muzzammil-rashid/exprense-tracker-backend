@@ -10,9 +10,9 @@ public interface ITransactionService {
     public TransactionEntity getTransactionById(String transactionId, String userId);
     public Boolean updateTransaction(String transactionId, TransactionModel transaction, String userId);
     public Boolean deleteTransaction(String transactionId, String userId);
-    public List<TransactionEntity> getAllTransactionByUserId(String userId);
-    public List<TransactionEntity> getAllTransactionByWalletId(String walletId, String userId, Integer limit);
-    public List<TransactionEntity> getAllTransactionBetweenDateRange(String startDate, String endDate);
+    public List<TransactionEntity> getAllTransactionByUserId(String userId, Integer pageNumber, Integer pageSize);
+    public List<TransactionEntity> getAllTransactionByWalletId(String walletId, String userId, Integer pageNumber, Integer pageSize);
+    public List<TransactionEntity> getAllTransactionBetweenDateRange(String startDate, String endDate, String userId);
     public List<TransactionEntity> getAllTransactionByWalletIdBetweenDateRange(String walletId, String startDate, String endDate, String userId);
     public List<TransactionEntity> addIncome(List<TransactionEntity>transactions);
 

@@ -9,6 +9,7 @@ import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
@@ -19,7 +20,7 @@ import io.jsonwebtoken.security.Keys;
 public class JWTServicesImplementation implements IJWTServices {
 
     @Autowired
-    private UserServiceImplementation userService;
+    private UserDetailsService userService;
 
     @Value("${security.secret-key}")
     private String SECRET_KEY;
@@ -73,8 +74,8 @@ public class JWTServicesImplementation implements IJWTServices {
     }
 
     @Override
-    public Boolean validateToken(String token, String userId) {
-        return extractClaim(token, Claims::getSubject).equalsIgnoreCase(userId);
+    public Boolean validateToken(String token, String username) {
+        return extractClaim(token, Claims::getSubject).equalsIgnoreCase(username);
     }
 
     @Override

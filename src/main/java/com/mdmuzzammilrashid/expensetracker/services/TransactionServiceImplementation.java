@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.mdmuzzammilrashid.expensetracker.Entity.TransactionEntity;
@@ -46,26 +49,29 @@ public class TransactionServiceImplementation implements ITransactionService {
     }
 
     @Override
-    public List<TransactionEntity> getAllTransactionByUserId(String userId) {
-            return transactionRepository.findByUserId(userId);
+    public List<TransactionEntity> getAllTransactionByUserId(String userId, Integer pageNumber, Integer pageSize) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "date" );
+        Pageable page = PageRequest.of(pageNumber, pageSize, sort);
+            return transactionRepository.findByUserId(userId, page).getContent();
     }
     
 
     @Override
-    public List<TransactionEntity> getAllTransactionByWalletId(String walletId, String userId, Integer limit) {
+    public List<TransactionEntity> getAllTransactionByWalletId(String walletId, String userId, Integer pageNumber, Integer pageSize) {
         //TODO:
         try {
             if(walletService.verifyUserWithWallet(userId, walletId)==false){
                 //TODO: throw exception of unauthorized user
                 return null;
             }
-            Pageable page = PageRequest.of(0, limit);
-            Optional<List<TransactionEntity>> transactions = transactionRepository.findTransactionByWalletId(walletId, userId, limit);
-            if(transactions.isPresent()){
-                return transactions.get();
-            }
+            Sort sort = Sort.by(Sort.Direction.DESC, "date" );
+            Pageable page = PageRequest.of(pageNumber, pageSize, sort);
+             Page<TransactionEntity> transactions = transactionRepository.findTransactionByWalletId(walletId, userId, page);
+            return transactions.getContent();
+
         } catch (Exception e) {
             // TODO: handle exception
+            System.out.println(e.getMessage());
         }
         return null;
 
@@ -79,6 +85,9 @@ public class TransactionServiceImplementation implements ITransactionService {
         transactions.forEach(transaction -> {
             if(!walletService.verifyUserWithWallet(userId, transaction.getWalletId())){
                 //TODO: throw exception of unauthorized user
+                System.out.println("not equal");
+                System.out.println(userId);
+                System.out.println(transaction.getWalletId());
                 return;
             }
             TransactionEntity entity = new TransactionEntity();
@@ -94,7 +103,6 @@ public class TransactionServiceImplementation implements ITransactionService {
             entity.setCategory(transaction.getCategory());
             entity.setWalletId(transaction.getWalletId());
             entity.setDescription(transaction.getDescription());
-            entity.setTransactionId(transaction.getTransactionId());
             entity.setType(transaction.getType());
             savedTransactions.add(entity);
         });
@@ -161,9 +169,9 @@ public class TransactionServiceImplementation implements ITransactionService {
     }
 
     @Override
-    public List<TransactionEntity> getAllTransactionBetweenDateRange(String startDate, String endDate) {
+    public List<TransactionEntity> getAllTransactionBetweenDateRange(String startDate, String endDate, String userId) {
         try {
-            Optional<List<TransactionEntity>> transactions = transactionRepository.findTransactionBetweenDates(startDate, endDate);
+            Optional<List<TransactionEntity>> transactions = transactionRepository.findTransactionBetweenDates(startDate, endDate, userId);
             if(transactions.isPresent()) {
                 return transactions.get();
             }

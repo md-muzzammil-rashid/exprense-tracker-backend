@@ -2,6 +2,7 @@ package com.mdmuzzammilrashid.expensetracker.Entity;
 
 import java.util.UUID;
 import java.util.ArrayList;
+
 import com.mdmuzzammilrashid.expensetracker.enums.ExpenseCategory;
 import com.mdmuzzammilrashid.expensetracker.enums.TransactionCategory;
 import com.mdmuzzammilrashid.expensetracker.enums.TransactionType;
@@ -9,6 +10,8 @@ import com.mdmuzzammilrashid.expensetracker.enums.TransactionType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +23,7 @@ import lombok.ToString;
 @ToString
 public class TransactionEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String transactionId;
     private String walletId;
     private String description;

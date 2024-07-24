@@ -20,12 +20,14 @@ public class UserDetailsServiceImplementation implements  UserDetailsService {
     @Autowired
     IUserRepo userRepo;
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserEntity> user = userRepo.findByUsername(username);
         if(!user.isPresent()){
             throw new AuthException("User not found ", HttpStatus.NOT_FOUND);
         }
+
         return User.builder()
             .username(user.get().getUsername())
             .password(user.get().getPassword())
