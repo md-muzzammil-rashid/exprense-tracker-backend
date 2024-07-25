@@ -18,5 +18,6 @@ public class UserDetailsResponse {
     private String displayName;
     private Boolean verified ;
     private String avatar;
+    private String budget;
 
 }

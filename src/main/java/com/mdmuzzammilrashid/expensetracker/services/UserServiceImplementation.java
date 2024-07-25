@@ -2,6 +2,7 @@ package com.mdmuzzammilrashid.expensetracker.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,12 +86,44 @@ public class UserServiceImplementation implements IUserService {
     public UserDetailsResponse getUserDetailsById(String userId) {
          UserEntity user = userRepo.findByUserId(userId).get();
          System.out.println(user);
-         UserDetailsResponse userDetail = new UserDetailsResponse(user.getUserId(), user.getUsername(), user.getEmail(), user.getDisplayName(), user.getVerified(), user.getAvatar());
+         UserDetailsResponse userDetail = new UserDetailsResponse(user.getUserId(), user.getUsername(), user.getEmail(), user.getDisplayName(), user.getVerified(), user.getAvatar(), user.getBudget());
         // UserDetailsResponse userDetail = new UserDetailsResponse();
         // userDetail.setUserId(user.getUserId());
 
         return userDetail;
     }
 
+    @Override
+    public Boolean setLogOut(String userId) {
+        try {
+            Optional<UserEntity> user = userRepo.findByUserId(userId);
+            if(user.isPresent()){
 
+                user.get().setRefreshToken(null);
+                userRepo.save(user.get());
+                return true;
+            }
+        } catch (Exception e) {
+            //TODO: throw exception
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean updateBudget(String userId, String budgetJSON) {
+        try {
+            Optional<UserEntity> user = userRepo.findByUserId(userId);
+            if(user.isPresent()){
+
+                user.get().setBudget(budgetJSON);
+                userRepo.save(user.get());
+                return true;
+            }
+        } catch (Exception e) {
+            //TODO: throw exception
+        }
+        return false;    
+    }
+
+    
 }

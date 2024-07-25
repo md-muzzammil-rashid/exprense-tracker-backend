@@ -13,4 +13,6 @@ public interface IUserService  {
     public UserEntity getUserDetails(String username);
     public void setRefreshToken(String username, String refreshToken);
     public UserDetailsResponse getUserDetailsById(String userId);
+    public Boolean setLogOut(String userId);
+    public Boolean updateBudget(String userId, String budgetJSON);
 }

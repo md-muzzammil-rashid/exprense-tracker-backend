@@ -40,6 +40,7 @@ public class UserEntity {
 
     private String accessToken;
     private String refreshToken;
+    private String budget;
 
     
 }

@@ -1,5 +1,5 @@
 package com.mdmuzzammilrashid.expensetracker.services;
 
-public class IBudgetService {
-    
+public interface IBudgetService {
+    public Boolean updateBudget(String userId, String budget);
 }
